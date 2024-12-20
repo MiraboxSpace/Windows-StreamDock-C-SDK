@@ -30,7 +30,7 @@ int tranSportKeyAllClear(tranSport* self);
 int tranSportWakeScreen(tranSport* self);
 int tranSportRefresh(tranSport* self);
 int tranSportDisconnected(tranSport* self);
-void transportClose(tranSport* self);
+void tranSportClose(tranSport* self);
 
 
 #endif

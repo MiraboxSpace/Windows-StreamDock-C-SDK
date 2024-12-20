@@ -160,9 +160,9 @@ int main()
 		Sleep(4000);
 		stream->clearAllIcon(stream);
 		stream->refresh(stream);
-		for (int j = 11; j <= 15; ++j)
+		for (int j = 1; j <= 15; ++j)
 		{
-			IplImage* img = cvLoadImage("./img/tiga.png", CV_LOAD_IMAGE_COLOR);		// 从文件加载图像
+			IplImage* img = cvLoadImage("./img/tiga112.png", CV_LOAD_IMAGE_COLOR);		// 从文件加载图像
 			if (!img) {
 				fprintf(stderr, "Error loading image\n");
 				return -1;

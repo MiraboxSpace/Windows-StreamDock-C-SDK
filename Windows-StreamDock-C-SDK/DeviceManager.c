@@ -114,7 +114,6 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
                         infoHead = infoHead->next;
                     }
                     infoHead = info;    // 记录头节点
-                    struct hid_device_info* next = info->next;
                     if (flag == 0)
                     {
                         DeviceManager_remove_streamDock(other, i);
@@ -231,28 +230,57 @@ void DeviceManager_enumerate(DeviceManager* dm) {
 
 void DeviceManager_listen(DeviceManager* dm)
 {
+    // 获取当前进程的实例句柄
     HINSTANCE hInstance = GetModuleHandle(NULL);
 
-    WNDCLASS wc;
-    wc.lpfnWndProc = WindowProc;
-    wc.hInstance = hInstance;
-    wc.lpszClassName = L"SampleClass";
-    RegisterClass(&wc);
+    // 定义并注册窗口类
+    WNDCLASSEX wc = { 0 };
+    wc.cbSize = sizeof(WNDCLASSEX);        // 窗口类结构体的大小
+    wc.lpfnWndProc = WindowProc;          // 窗口过程函数指针
+    wc.lpszClassName = L"xxxClass";       // 窗口类名
+    wc.hInstance = hInstance;             // 实例句柄
+    wc.hCursor = LoadCursor(NULL, IDC_ARROW); // 默认光标
 
+    // 注册窗口类
+    if (RegisterClassEx(&wc) == 0) {
+        DWORD error = GetLastError();
+        wprintf(L"RegisterClassEx failed with error code: %lu\n", error);
+        return -1;
+    }
+
+    // 创建窗口
     HWND hwnd = CreateWindowEx(
         0,
-        L"SampleClass",
-        L"Sample Window",
-        0,
-        0, 0, 0, 0,
-        HWND_MESSAGE, // No actual window is created
-        NULL,
-        hInstance,
-        NULL
+        L"xxxClass",    // 窗口类名
+        L"xxxWindow",   // 窗口标题
+        WS_OVERLAPPEDWINDOW,
+        CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, // 默认位置和大小
+        NULL,            // 父窗口句柄
+        NULL,            // 菜单句柄
+        hInstance,       // 实例句柄
+        NULL             // 附加数据
     );
 
     if (!hwnd) {
-        fprintf(stderr, "Failed to create window.");
+        fprintf(stderr, "Failed to create window.\n");
+        DWORD error = GetLastError();  // 获取错误代码
+        wprintf(L"CreateWindowEx failed with error code: %lu\n", error);
+
+        // 根据错误代码打印更详细的错误信息
+        switch (error) {
+        case ERROR_INVALID_PARAMETER:
+            wprintf(L"Invalid parameters were passed to CreateWindowEx.\n");
+            break;
+        case ERROR_OUTOFMEMORY:
+            wprintf(L"Not enough memory to complete the operation.\n");
+            break;
+        case ERROR_INVALID_WINDOW_HANDLE:
+            wprintf(L"Invalid window handle.\n");
+            break;
+        default:
+            wprintf(L"Unknown error: %lu\n", error);
+            break;
+        }
         return 1;
     }
 
