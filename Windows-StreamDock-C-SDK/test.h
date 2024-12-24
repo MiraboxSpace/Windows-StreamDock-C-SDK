@@ -18,18 +18,23 @@ void writeFile(unsigned char* array, int len)
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-DWORD WINAPI ReadThread(LPVOID lpParam) 
+DWORD WINAPI ReadThread(LPVOID lpParam)
 {
-    streamDock* s = (streamDock*)lpParam;
-    while (1)
-    {
-        unsigned char* buf = s->read(s);
-        printf("%s %s %d %d\n", buf, buf + 5, (int)buf[9], (int)buf[10]);
-		free(buf);		// must free here
-    }
+	//  streamDock* s = (streamDock*)lpParam;
+	//  while (1)
+	//  {
+		  ////Sleep(20);
+	//      unsigned char* buf = s->read(s);
+		  //if (strncmp("OK", buf + 5, 2) == 0)
+		  //{
+		  //	printf("%s %s %d %d\n", buf, buf + 5, (int)buf[9], (int)buf[10]);
+		  //}
+		  //free(buf);		// must free here
+	//  }
+	while (1) Sleep(20);
 }
 
-void test_streamDock_read(streamDock* stream)
+HANDLE test_streamDock_read(streamDock* stream)
 {
 	HANDLE hThread;
 	DWORD threadID;
@@ -38,8 +43,7 @@ void test_streamDock_read(streamDock* stream)
 		printf("Failed to create thread. Error code: %lu\n", GetLastError());
 		return;
 	}
-	// 等待子线程结束
-	WaitForSingleObject(hThread, INFINITE);
+	return hThread;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

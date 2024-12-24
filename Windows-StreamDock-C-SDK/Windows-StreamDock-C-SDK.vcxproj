@@ -120,7 +120,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>hidapi.lib;opencv_core231.lib;opencv_core231d.lib;opencv_imgproc231.lib;opencv_imgproc231d.lib;opencv_highgui231.lib;opencv_highgui231d.lib;transportd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>hidapi.lib;opencv_core231.lib;opencv_core231d.lib;opencv_imgproc231.lib;opencv_imgproc231d.lib;opencv_highgui231.lib;opencv_highgui231d.lib;transport.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -144,6 +144,8 @@
     <ClInclude Include="DeviceManager.h" />
     <ClInclude Include="hidapi.h" />
     <ClInclude Include="hidapi_winapi.h" />
+    <ClInclude Include="memorybytestrem.h" />
+    <ClInclude Include="rotateimg.h" />
     <ClInclude Include="streamDock293V3.h" />
     <ClInclude Include="streamDockN3.h" />
     <ClInclude Include="streamDockN4.h" />
@@ -156,6 +158,10 @@
   <ItemGroup>
     <ClCompile Include="demo.c" />
     <ClCompile Include="DeviceManager.c" />
+    <ClCompile Include="example.c" />
+    <ClCompile Include="example_293old.c" />
+    <ClCompile Include="memorybytestrem.c" />
+    <ClCompile Include="rotateimg.c" />
     <ClCompile Include="streamDock.c" />
     <ClCompile Include="streamDock293.c" />
     <ClCompile Include="streamDock293V3.c" />
