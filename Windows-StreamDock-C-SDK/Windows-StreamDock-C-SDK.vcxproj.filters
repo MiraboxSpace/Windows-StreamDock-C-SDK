@@ -48,6 +48,12 @@
     <ClInclude Include="streamDockN4.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="memorybytestrem.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="rotateimg.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="demo.c">
@@ -69,6 +75,18 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="streamDockN4.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="memorybytestrem.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="rotateimg.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="example.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="example_293old.c">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

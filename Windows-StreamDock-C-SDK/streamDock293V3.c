@@ -175,7 +175,7 @@ int streamDock293V3_setBackgroundImgData(streamDock* self, unsigned char* imaged
     return res;
 }
 
-// you should the return pointer
+// you should free the return pointer
 unsigned char* streamDock293V3_read(streamDock* self)
 {
     if (!self) return NULL;

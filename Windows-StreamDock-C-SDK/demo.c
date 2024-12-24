@@ -1,6 +1,11 @@
+//#define DEMO
+#ifdef DEMO
+
 #include <stdio.h>
 #include "DeviceManager.h"
 #include "test.h"
+#include "memorybytestrem.h"
+#include "rotateimg.h"
 
 /*
 	293
@@ -62,14 +67,17 @@
 
 int main()
 {
-	DeviceManager* dm =	DeviceManager_init();
+	DeviceManager* dm = DeviceManager_init();
 	DeviceManager_enumerate(dm);
-	
+
 	int mapSize = dm->streamDockmaps_size;
 	printf("发现了%d个设备\n", mapSize);
+	HANDLE hThread = NULL;
 	for (int i = 0; i < mapSize; ++i)
 	{
+
 		streamDock* stream = dm->streamDockmaps[i].value;
+
 		//////////////////////////////////////////////////////////////////////////////
 		// api 1 test open
 		//////////////////////////////////////////////////////////////////////////////
@@ -83,6 +91,7 @@ int main()
 		//////////////////////////////////////////////////////////////////////////////
 		////设置设备屏幕亮度为100%
 		stream->setBrightness(stream, 100);
+		hThread = test_streamDock_read(stream);
 		//////////////////////////////////////////////////////////////////////////////
 		// api 4 test refresh
 		//////////////////////////////////////////////////////////////////////////////
@@ -147,38 +156,48 @@ int main()
 		//////////////////////////////////////////////////////////////////////////////
 		// api 13 test setBackgroundImgData
 		//////////////////////////////////////////////////////////////////////////////
-		IplImage* img = cvLoadImage("./img/bg.png", CV_LOAD_IMAGE_COLOR);		// 从文件加载图像
-		if (!img) {
-			fprintf(stderr, "Error loading image\n");
-			return -1;
-		}
-		
-		unsigned char* imagedata = (unsigned char*)img->imageData;			// 获取图像数据指针
-		stream->setBackgroundImgData(stream, imagedata);
-		stream->refresh(stream);
+		//stream->clearAllIcon(stream);
+		//stream->refresh(stream);
+
+		//IplImage* img = cvLoadImage("./img/YiFei.png", CV_LOAD_IMAGE_COLOR);		// 从文件加载图像
+		//if (!img) {
+		//	fprintf(stderr, "Error loading image\n");
+		//	return -1;
+		//}
+		//
+		//unsigned char* imagedata = (unsigned char*)img->imageData;			// 获取图像数据指针
+		//stream->setBackgroundImgData(stream, imagedata);
+		//tranSportSetBackgroundImg(stream->transport, imagedata, img->height * img->width * 3);
+		//tranSportSetBackgroundImgDataDualDevice(stream->transport,imagedata, img->height * img->width * 3);
+		//stream->refresh(stream);
 		//stream->disconnected(stream);
-		Sleep(4000);
+		//Sleep(4000);
 		stream->clearAllIcon(stream);
 		stream->refresh(stream);
+
 		for (int j = 1; j <= 15; ++j)
 		{
-			IplImage* img = cvLoadImage("./img/tiga112.png", CV_LOAD_IMAGE_COLOR);		// 从文件加载图像
+			IplImage* img = cvLoadImage("./img/12345.png", CV_LOAD_IMAGE_COLOR);		// 从文件加载图像
 			if (!img) {
 				fprintf(stderr, "Error loading image\n");
 				return -1;
 			}
-			unsigned char* imagedata = (unsigned char*)img->imageData;			// 获取图像数据指针
-			stream->setKeyImgData(stream, imagedata, j);
+			stream->setKeyImgData(stream, img->imageData, j);
 			stream->refresh(stream);
 		}
-		Sleep(2000);
+		//Sleep(2000);
 
 		//////////////////////////////////////////////////////////////////////////////
 		///// block the app end...
 		//////////////////////////////////////////////////////////////////////////////
 		//test_streamDock_read(stream);
 	}
+	// 等待子线程结束
+	if (hThread)
+		WaitForSingleObject(hThread, INFINITE);
 	test_streamDock_listen(dm);
 	DeviceManager_free(dm);
 	return 0;
 }
+
+#endif
