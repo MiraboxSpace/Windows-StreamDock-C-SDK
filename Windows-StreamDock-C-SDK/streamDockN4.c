@@ -294,7 +294,7 @@ int streamDockN4_setKeyImgData(streamDock* self, unsigned char* imagedata, int k
     // 旋转180度后发送
     IplImage* backup_image = rotate180_N4(image, temp_filename, width, height);
     //  调用 transport->setKeyImgDataDualDevice 
-    int result = tranSportSetKeyImgDataDualDevice(self->transport, temp_filename, key);
+    int result = tranSportSetKeyImgDualDevice(self->transport, temp_filename, key);
     // 删除临时图像文件
     if (remove(temp_filename) != 0) {
         fprintf(stderr, "Failed to delete file %s\n", temp_filename);

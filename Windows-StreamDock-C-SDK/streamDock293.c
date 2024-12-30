@@ -311,7 +311,7 @@ static int streamDock293_setKeyImg(struct streamDock* self, const char* path, in
     unsigned char* buffer = rotate180_293(image, temp_filename, &filesize);
     int height = 100;
     int width = 100;
-    int result = tranSportSetKeyImgData(self->transport, buffer, filesize, key, width, height);
+    int result = tranSportSetKeyImgData(self->transport, buffer, filesize, key);
     // 释放内存
     free(buffer);
     cvReleaseImage(&image);
@@ -336,7 +336,7 @@ static int streamDock293_setKeyImgData(struct streamDock* self, unsigned char* i
     long filesize = 0;
     const char* temp_filename = "293_tmp_key_data.jpg";
     unsigned char* buffer = rotate180_293(image, temp_filename, &filesize);
-    int result = tranSportSetKeyImgData(self->transport, buffer, filesize, key, width, height);
+    int result = tranSportSetKeyImgData(self->transport, buffer, filesize, key);
     // 释放内存
     free(buffer);
     cvReleaseImage(&image);
