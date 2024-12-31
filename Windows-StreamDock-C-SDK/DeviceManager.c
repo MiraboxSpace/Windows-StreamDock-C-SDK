@@ -132,6 +132,10 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 // 初始化设备管理器
 DeviceManager* DeviceManager_init() {
     DeviceManager* dm = (DeviceManager*)malloc(sizeof(DeviceManager));
+    if (!dm)
+    {
+        fprintf(stderr, "device manager init error!\n");
+    }
     dm->transport = tranSportInit();
     dm->streamDockmaps = (KeyValuePair*)malloc(MAX_DEVICES * sizeof(KeyValuePair));
     dm->streamDockmaps_size = 0;
@@ -152,6 +156,7 @@ void DeviceManager_free(DeviceManager* dm) {
             free(dm->streamDockmaps);
         }
         if (dm->transport) {
+            //tranSportClose(dm->transport);
             tranSportDestory(dm->transport);
         }
         free(dm->deviceType);

@@ -5,10 +5,13 @@
 #include <sys/stat.h>
 #include "hidapi.h"
 
-
 #ifdef __cplusplus
 extern "C" {
 #endif
+/* ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ */
+    void setDebugFlag();
+    void resetDebugFlag();
+/* ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ */
 
 /*
     @@ The following macros are the maximum blocking duration when setting the background. When you use _INFINITE_TM, the main thread cannot unblock if the correct return signal
@@ -18,13 +21,38 @@ extern "C" {
 
     @@ It is recommended to use different blocking durations for different models. The minimum blocking duration should not exceed 3000ms.
 */
+#define _INFINITE_TM    (0xffffffff)
+#define _SD293_TM       (5000)
+#define _SD293V3_TM     (3000)
+#define _SDN3_TM        (5000)
+#define _SDN4_TM        (3000)
+static unsigned long BLOCKTIME = _INFINITE_TM;
+static unsigned long dualBackGroundDelay = 5;   // set background then sleep for 5ms.
 
-#define _INFINITE_TM (0xffffffff)
-#define _SD293_TM  (5000)
-#define _SD293V3_TM  (3000)
-#define _SDN3_TM  (5000)
-#define _SDN4_TM  (3000)
-static unsigned long BLOCKTIME = _SD293_TM;
+// error code
+enum ERROR_CODE
+{
+    UnKnown = 0x00000000,   // Unknown
+    INSTANCE_NULL = 0x00000001,   // Transport instance does not exist
+    HID_DEVICE_NULL = 0x00000002,   // USB device does not exist
+    HID_READ_ERROR = 0x00000004,   // USB device read error, you can call hid_error() to check the most recent error
+    HID_WRITE_ERROR = 0x00000008,   // USB device write error, you can call hid_error() to check the most recent error
+    FILE_OPEN_ERROR = 0x00000010,   // File open failure
+    KEY_RANGE_EXCEEDS = 0x00000020,   // Key cannot be set to out of 1 - 15
+    KEY_FILE_SIZE_EXCEEDS = 0x00000040,   // Key file size exceeds the limit
+    BGI_FILE_SIZE_EXCEEDS = 0x00000080,   // Background file size exceeds the limit
+    FILE_FORMAT_NOT_JPEG = 0x00000100,   // File format is not JPEG
+    JPEG_SIZE_MISMATCH_64X64 = 0x00000200,   // JPEG image size is not 64x64
+    JPEG_SIZE_MISMATCH_100X100 = 0x00000400,   // JPEG image size is not 100x100
+    JPEG_SIZE_MISMATCH_112X112 = 0x00000800,   // JPEG image size is not 112x112
+    JPEG_SIZE_MISMATCH_176X112 = 0x00001000,   // JPEG image size is not 176x112
+    JPEG_SIZE_MISMATCH_320X240 = 0x00002000,   // JPEG image size is not 320x240
+    JPEG_SIZE_MISMATCH_800X480 = 0x00004000,   // JPEG image size is not 800x480
+};
+// You can just get the error code plus by ERROR_CODE
+unsigned int getLastErrorCode();
+// You can visually see the error message
+void printLastErrorInfo();
 
 typedef struct tranSport
 {
@@ -40,6 +68,7 @@ int tranSportWrite(tranSport* self, unsigned char* data, unsigned long length);
 void tranSportFreeEnumerate(tranSport* self, struct hid_device_info* devs);
 struct hid_device_info* tranSportEnumerate(tranSport* self, int vid, int pid);
 int tranSportSetBrightness(tranSport* self, int percent);
+
 /*
     @ new addition: @@ three set background function will block until it get the "OK" signal that's from transport read
                     @@ You should not call the refresh() function after setting the background, as the background setting
@@ -49,21 +78,21 @@ int tranSportSetBrightness(tranSport* self, int percent);
     @ note: tranSportSetBackgroundImg's buffer is opencv's cv::Mat.imagedata, can't not read from fread();
             you can not use tranSportSetBackgroundImg() directly, see streamdock293.c
 */
-int tranSportSetBackgroundImg(tranSport* self, unsigned char* buffer, const int size);
+int tranSportSetBackgroundImg(tranSport* self, unsigned char* buffer, int bufferLen);
 int tranSportSetBackgroundImgDualDevice(tranSport* self, const char* path);
 /*
     @ usage example: For specific usage, refer to example.c(usage 4)
     @ note: You must first view the usage examples before writing it yourself, because the usage examples include various precautions,
-            such as the format and size of the image being read, etc. The same applies to tranSportSetKeyImgDataDualDeviceEx below.
+            such as the format and size of the image being read, etc. The same applies to tranSportSetKeyImgDataDualDevice below.
             Reading these usage examples won't take you much time, as their function names represent their purpose, and they come with English comments.
     @ breif: set background with image data(file data, read from fread, not opencv data)
 */
 int tranSportSetBackgroundImgDataDualDevice(tranSport* self, unsigned char* memoryByteBuffer, int bufferLen);
 
-
 int tranSportSetKeyImg(tranSport* self, const char* path, int key);
+int tranSportSetKeyImgData(tranSport* self, unsigned char* memoryByteBuffer, int bufferLen, int key);
 int tranSportSetKeyImgDualDevice(tranSport* self, const char* path, int key);
-int tranSportSetKeyImgDataDualDevice(tranSport* self, const char* path, int key);
+//int tranSportSetKeyImgDataDualDevice(tranSport* self, const char* path, int key);
 /*
     @ usage example: For specific usage, refer to example.c(usage 1 OR usage 2)
     @ breif: set key with image data
@@ -75,8 +104,8 @@ int tranSportSetKeyImgDataDualDevice(tranSport* self, const char* path, int key)
             @@ bufferLen: you can get like parma memoryByteBuffer from function saveImageToMemory(args...) in "memorybytestream.h"
             @@ key: which key you control in mirabox
 */
-int tranSportSetKeyImgDataDualDeviceEx(tranSport* self, unsigned char* memoryByteBuffer, int bufferLen, int key);
-int tranSportSetKeyImgData(tranSport* self, unsigned char* buffer, int bufferLen, int key, int width, int height);
+int tranSportSetKeyImgDataDualDevice(tranSport* self, unsigned char* memoryByteBuffer, int bufferLen, int key);
+
 int tranSportKeyClear(tranSport* self, int i);
 int tranSportKeyAllClear(tranSport* self);
 int tranSportWakeScreen(tranSport* self);

@@ -9,10 +9,24 @@ uchar* saveImageToMemory(IplImage* img, int* buffer_size, int quality) {
     // Encode the image to a byte stream (CvMat)
     CvMat* encoded_image = cvEncodeImage(".jpg", img, params);
 
-    // If encoding is successful, get the byte data from the CvMat
+    // If encoding is successful, copy the byte data
     if (encoded_image != NULL) {
         *buffer_size = encoded_image->rows * encoded_image->cols;  // Get the size of the encoded image
-        return (uchar*)encoded_image->data.ptr;  // Return the byte data
+
+        // Allocate independent memory for the encoded image
+        uchar* data_ptr = (uchar*)malloc(*buffer_size);
+        if (data_ptr != NULL) {
+            memcpy(data_ptr, encoded_image->data.ptr, *buffer_size);  // Copy the byte data
+        }
+        else {
+            printf("Memory allocation failed.\n");
+            *buffer_size = 0;
+        }
+
+        // Release the CvMat object since it's no longer needed
+        cvReleaseMat(&encoded_image);
+
+        return data_ptr;  // Return the byte data
     }
     else {
         printf("Failed to encode image.\n");

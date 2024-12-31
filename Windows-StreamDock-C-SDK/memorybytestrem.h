@@ -13,7 +13,7 @@
 ///			  5 暂时只支持.jpg格式
 ///			  6 jpg质量参数最好不要超过95，因为大小最好不要超过10K
 /// 
-///		注意事项: 1 saveImageToMemory_B中的返回值, 你无需使用free来释放, 他并不是堆区内存
+///		注意事项: 1 saveImageToMemory_B中的返回值, 你必须使用free来释放, 他是堆区内存
 ///				  2 loadImageFromMemory的IplImage* 需要你使用cvReleaseImage来对该指针进行释放
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///		Description:
@@ -24,7 +24,7 @@
 ///			  5 Currently, only ".jpg" formats are supported.
 ///			  6 The quality parameter should not exceed 95, as the file size should preferably not exceed 10K Bytes.
 ///     Notes:
-///				  1 The return value of saveImageToMemory_B does not need to be freed, as it is not heap memory.
+///				  1 The return value of saveImageToMemory_B must to be freed, as it is heap memory.
 ///				  2 The IplImage* returned by loadImageFromMemory needs to be released using cvReleaseImage.
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -36,6 +36,7 @@
 //		uchar* buffer = saveImageToMemory(img1, &bufferLen, 90);
 //		
 //		IplImage* new_img = loadImageFromMemory(buffer, buffer_size);
+//		free(buffer);
 //		cvShowImage("Loaded Image", new_img);
 //		cvWaitKey(0);
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
